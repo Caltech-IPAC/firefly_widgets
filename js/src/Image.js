@@ -13,9 +13,7 @@ var ImageModel = widgets.DOMWidgetModel.extend({
         _model_name : 'ImageModel',
         _view_name : 'ImageView',
         _model_module : 'jupyter-firefly',
-        _view_module : 'jupyter-firefly',
-        GridOn : true,
-        SurveyKey : 'k'
+        _view_module : 'jupyter-firefly'
     })
 });
 
@@ -23,8 +21,10 @@ var seq = 1;
 // Custom View. Renders the widget model.
 var ImageView = widgets.DOMWidgetView.extend({
     render: function() {
+        this.url = this.model.get('url');
+        this.el.id = `imageViewer-${seq++}`;
         this.req = {
-            plotId: 'xxq',
+            plotId    : this.el.id,
             Type      : 'SERVICE',
             Service   : 'TWOMASS',
             Title     : '2mass from service',
@@ -34,19 +34,32 @@ var ImageView = widgets.DOMWidgetView.extend({
             SizeInDeg  : '.12',
             AllowImageSelection : true
         };
-        this.el.id = `imageViewer-${seq++}`;
-        this.model.on('change:GridOn change:SurveyKey', this.redraw, this);
+        this.model.on('change:GridOn change:SurveyKey change:FilePath', this.redraw, this);
+        this.model.on('change:colorbar', this.update_color, this);
         this.redraw = this.redraw.bind(this);
+        this.update_color = this.update_color.bind(this);
         setTimeout(this.redraw, 0);
+        setTimeout(this.update_color, 0);
     },
 
     redraw: function() {
         this.req.GridOn = this.model.get('GridOn');
         this.req.SurveyKey = this.model.get('SurveyKey');
-        firefly.showImage(this.el.id, this.req);
-    }
-});
+        this.req.WorldPt = this.model.get('WorldPt');
+        this.req.SizeInDeg = this.model.get('SizeInDeg');
+        if (this.url.length === 0) {
+            firefly.showImage(this.el.id, this.req);
+        }
+        else {
+            firefly.showImage(this.el.id, {url: this.url, plotId: this.el.id});
+        }
+    },
 
+    update_color: function() {
+        firefly.action.dispatchColorChange({plotId : this.el.id, cbarId : this.model.get('colorbar')});
+    }
+        
+});
 
 module.exports = {
     ImageModel : ImageModel,
