@@ -1,15 +1,17 @@
 firefly_widgets
 ===============================
 
-Firefly as Widgets
+Firefly as Jupyter Widgets
+
+**Note: these are experimental widgets lacking much of the planned functionality.**
 
 Installation
 ------------
 
-To install use pip:
+To install use pip (not ready yet):
 
     $ pip install firefly_widgets
-    $ jupyter nbextension enable --py --sys-prefix pyfirefly
+    $ jupyter nbextension enable --py --sys-prefix firefly_widgets
 
 
 For a development installation (requires npm),
@@ -17,5 +19,18 @@ For a development installation (requires npm),
     $ git clone https://github.com/Caltech-IPAC/firefly_widgets.git
     $ cd firefly_widgets
     $ pip install -e .
-    $ jupyter nbextension install --py --symlink --user pyfirefly
-    $ jupyter nbextension enable --py --user pyfirefly
+    $ jupyter nbextension install --py --symlink --user firefly_widgets
+    $ jupyter nbextension enable --py --user firefly_widgets
+
+For further development:
+ - Javascript side:
+    - edit source in js/src
+    - npm install in js/
+ - Python side:
+    - edit source
+
+To remove:
+
+    $ jupyter nbextension disable jupyter-firefly
+    $ jupyter nbextension enable --py --sys-prefix firefly_widgets
+
