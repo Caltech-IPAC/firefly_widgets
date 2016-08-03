@@ -33,7 +33,8 @@ var TableView = widgets.DOMWidgetView.extend({
         this.model.on('change:pageSize change:filters', this.redraw, this);
         this.redraw = this.redraw.bind(this);
         this.tableUpdated = this.tableUpdated.bind(this);
-        this.removeListner = firefly.util.addActionListener(['table.new','table.sort','tableUi.update'], this.tableUpdated);
+        var actions = firefly.action.type;
+        this.removeListner = firefly.util.addActionListener([actions.TABLE_LOADED, actions.TBL_UI_UPDATE], this.tableUpdated);
         setTimeout(this.redraw, 0);
     },
 
