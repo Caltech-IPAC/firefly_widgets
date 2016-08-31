@@ -31,6 +31,6 @@ For further development:
 
 To remove:
 
-    $ jupyter nbextension disable jupyter-firefly
-    $ jupyter nbextension enable --py --sys-prefix firefly_widgets
+    $ jupyter nbextension disable --py --sys-prefix firefly_widgets
+    $ jupyter nbextension uninstall --py --sys-prefix firefly_widgets
 
