@@ -14,8 +14,6 @@ var TableModel = widgets.DOMWidgetModel.extend({
         _view_name : 'TableView',
         _model_module : 'jupyter-firefly',
         _view_module : 'jupyter-firefly',
-        pageSize : 50,
-        filters : ''
     })
 });
 
@@ -24,11 +22,19 @@ var seq = 1;
 // Custom View. Renders the widget model.
 var TableView = widgets.DOMWidgetView.extend({
     render: function() {
-        this.req = firefly.util.table.makeIrsaCatalogRequest('wise_allwise_p3as_psd', 'WISE', 'wise_allwise_p3as_psd',
-            {   position: '10.68479;41.26906;EQ_J2000',
-                SearchMethod: 'Cone',
-                radius: 300
-            });
+        this.url_or_path = this.model.get('url_or_path');
+        if (this.url_or_path.length === 0) {
+            this.req = firefly.util.table.makeIrsaCatalogRequest('wise_allwise_p3as_psd', 'WISE', 'wise_allwise_p3as_psd',
+                {   position: this.model.get('position'),
+                    SearchMethod: 'Cone',
+                    radius: this.model.get('radius')
+                });
+        }
+        else {
+            this.req = firefly.util.table.makeFileRequest(this.model.get('title'), this.model.get('url_or_path'), null,
+                     { page_size: this.model.get('page_size')
+                     });
+        }
         this.el.id = `TableViewer-${seq++}`;
         this.model.on('change:pageSize change:filters', this.redraw, this);
         this.redraw = this.redraw.bind(this);
@@ -39,15 +45,15 @@ var TableView = widgets.DOMWidgetView.extend({
     },
 
     redraw: function() {
-        this.req.pageSize = this.model.get('pageSize');
+        this.req.page_size = this.model.get('page_size');
         this.req.filters = this.model.get('filters');
         firefly.showTable(this.el.id, this.req);
     },
 
     tableUpdated: function(action, state) {
-        var dataUrl = firefly.util.table.getTableSourceUrl(
+        var data_url = firefly.util.table.getTableSourceUrl(
                         firefly.util.table.getTableUiByTblId(this.req.tbl_id));
-        this.model.set('dataUrl', dataUrl);
+        this.model.set('data_url', data_url);
         if (action.payload.tbl_id === this.req.tbl_id) {
             var o_filters = this.model.get('filters');
             var n_filters = action.payload.request.filters;
