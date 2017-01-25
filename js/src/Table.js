@@ -24,7 +24,7 @@ var TableView = widgets.DOMWidgetView.extend({
     render: function() {
         this.url_or_path = this.model.get('url_or_path');
         if (this.url_or_path.length === 0) {
-            this.req = firefly.util.table.makeIrsaCatalogRequest('wise_allwise_p3as_psd', 'WISE', 'wise_allwise_p3as_psd',
+            this.req = firefly.util.table.makeIrsaCatalogRequest('allwise_p3as_psd', 'WISE', 'allwise_p3as_psd',
                 {   position: this.model.get('position'),
                     SearchMethod: 'Cone',
                     radius: this.model.get('radius')
