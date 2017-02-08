@@ -17,6 +17,10 @@ var ImageModel = widgets.DOMWidgetModel.extend({
     })
 });
 
+var util = firefly.util;
+var action = firefly.action;
+
+
 var seq = 1;
 // Custom View. Renders the widget model.
 var ImageView = widgets.DOMWidgetView.extend({
@@ -38,8 +42,9 @@ var ImageView = widgets.DOMWidgetView.extend({
         this.model.on('change:colorbar', this.update_color, this);
         this.redraw = this.redraw.bind(this);
         this.update_color = this.update_color.bind(this);
+        this.color_changed = this.color_changed.bind(this);
+        this.removeListner = util.addActionListener(action.type.COLOR_CHANGE, this.color_changed);
         setTimeout(this.redraw, 0);
-        setTimeout(this.update_color, 0);
     },
 
     redraw: function() {
@@ -47,18 +52,37 @@ var ImageView = widgets.DOMWidgetView.extend({
         this.req.SurveyKey = this.model.get('SurveyKey');
         this.req.WorldPt = this.model.get('WorldPt');
         this.req.SizeInDeg = this.model.get('SizeInDeg');
-        if (this.url.length === 0) {
+        if (this.hasOwnProperty("url") && (this.url.length === 0)) {
             firefly.showImage(this.el.id, this.req);
         }
         else {
+            console.log('using url ' + this.url);
             firefly.showImage(this.el.id, {url: this.url, plotId: this.el.id});
         }
     },
 
     update_color: function() {
-        firefly.action.dispatchColorChange({plotId : this.el.id, cbarId : this.model.get('colorbar')});
-    }
-        
+        console.log('updating color to ' + this.model.get('colorbar'));
+        firefly.action.dispatchColorChange({plotId : this.el.id, 
+                                            cbarId : Number(this.model.get('colorbar')),
+                                            actionScope : 'SINGLE'});
+    },
+
+    color_changed: function(action,state) {        // the callback for a color change
+        if (action.payload.plotId === this.req.plotId) {
+            var cbarId = Number(action.payload.primaryStateJson.colorTableId);
+            var o_colorbar = Number(this.model.get('colorbar'));
+            var mymodel = this.model;
+            console.log('I got a color change, colorbar = ' + cbarId);
+            console.log('model colorbar = ' + o_colorbar);
+            if (cbarId != o_colorbar){
+                console.log('updating model colorbar to ' + cbarId);
+                this.model.set('colorbar', cbarId);
+                this.touch();
+            }
+        }
+     },
+
 });
 
 module.exports = {
