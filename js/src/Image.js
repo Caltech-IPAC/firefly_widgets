@@ -9,11 +9,13 @@ var _ = require('underscore');
 // When serialiazing entire widget state for embedding, only values different from the
 // defaults will be specified.
 var ImageModel = widgets.DOMWidgetModel.extend({
-    defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
+    defaults: _.extend(_.result(this, 'widgets.DOMWidgetModel.prototype.defaults'), {
         _model_name : 'ImageModel',
         _view_name : 'ImageView',
         _model_module : 'jupyter-firefly',
-        _view_module : 'jupyter-firefly'
+        _view_module : 'jupyter-firefly',
+        _model_module_version : '0.1.0',
+        _view_module_version: '0.1.0',
     })
 });
 
@@ -43,7 +45,9 @@ var ImageView = widgets.DOMWidgetView.extend({
         this.redraw = this.redraw.bind(this);
         this.update_color = this.update_color.bind(this);
         this.color_changed = this.color_changed.bind(this);
+        this.point_picked = this.point_picked.bind(this);
         this.removeListner = util.addActionListener(action.type.COLOR_CHANGE, this.color_changed);
+        this.stopPickListner = util.addActionListener(action.type.SELECT_POINT, this.point_picked);
         setTimeout(this.redraw, 0);
     },
 
@@ -82,6 +86,22 @@ var ImageView = widgets.DOMWidgetView.extend({
             }
         }
      },
+
+    point_picked: function(action,state) {
+        console.log('I got a point picked');
+        if (action.payload.plotId === this.req.plotId) {
+            var imagePt = String(action.payload.imagePt);
+            var worldPt = String(action.payload.worldPt);
+            console.log('imagePt is ' + imagePt);
+            var data = imagePt.split(';');
+            console.log('data[0] is ' + data[0]);
+            console.log('data[1] is ' + data[1]);
+            this.model.set('select_x', Number(data[0]));
+            this.model.set('select_y', Number(data[1]));
+            this.model.set('WorldPt', worldPt);
+            this.touch();
+        }
+     }
 
 });
 
