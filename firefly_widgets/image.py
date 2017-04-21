@@ -7,8 +7,12 @@ class ImageViewer(widgets.DOMWidget):
     """
     Image Viewer widget
     """
+    _model_name = Unicode('ImageModel').tag(sync=True)
+    _model_module = Unicode('jupyter-firefly').tag(sync=True)
+    _model_module_version = Unicode('0.1.0').tag(sync=True)
     _view_name = Unicode('ImageView').tag(sync=True)
     _view_module = Unicode('jupyter-firefly').tag(sync=True)
+    _view_module_version = Unicode('0.1.0').tag(sync=True)
     GridOn = Bool(True).tag(sync=True)
     SurveyKey = Unicode('k').tag(sync=True)
     WorldPt = Unicode('10.68479;41.26906;EQ_J2000').tag(sync=True)
