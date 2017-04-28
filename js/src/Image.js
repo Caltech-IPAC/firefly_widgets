@@ -9,11 +9,13 @@ var _ = require('underscore');
 // When serialiazing entire widget state for embedding, only values different from the
 // defaults will be specified.
 var ImageModel = widgets.DOMWidgetModel.extend({
-    defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
+    defaults: _.extend(_.result(this, 'widgets.DOMWidgetModel.prototype.defaults'), {
         _model_name : 'ImageModel',
         _view_name : 'ImageView',
         _model_module : 'jupyter-firefly',
-        _view_module : 'jupyter-firefly'
+        _view_module : 'jupyter-firefly',
+        _model_module_version : '0.1.0',
+        _view_module_version : '0.1.0'
     })
 });
 

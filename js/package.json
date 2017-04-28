@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Firefly as Widgets",
   "author": "IPAC LSST SUIT",
-  "license": "BSD-3-Clause", 
+  "license": "BSD-3-Clause",
   "main": "src/index.js",
   "repository": {
     "type": "git",
@@ -24,7 +24,7 @@
     "webpack": "^1.12.14"
   },
   "dependencies": {
-    "jupyter-js-widgets": "^1.1.1",
+    "jupyter-js-widgets": "^2.1.4",
     "underscore": "^1.8.3"
   }
 }
