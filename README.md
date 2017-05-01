@@ -8,7 +8,7 @@ Firefly Components as Jupyter Widgets
 Installation
 ------------
 
-To install use pip (not ready yet):
+To install using pip:
 
     $ pip install firefly_widgets
     $ jupyter nbextension enable --py --sys-prefix firefly_widgets
