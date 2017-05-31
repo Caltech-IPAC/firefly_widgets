@@ -1,5 +1,5 @@
 import ipywidgets as widgets
-from traitlets import Unicode, Bool, Integer, TraitError, validate
+from traitlets import Unicode, Bool, Integer, Float, TraitError, validate
 
 
 @widgets.register('Image')
@@ -19,6 +19,9 @@ class ImageViewer(widgets.DOMWidget):
     SizeInDeg = Unicode('.12').tag(sync=True)
     url = Unicode('').tag(sync=True)
     colorbar = Integer(0).tag(sync=True)
+    x_pan = Float(1.0).tag(sync=True)
+    y_pan = Float(1.0).tag(sync=True)
+    zoom = Float(1.0).tag(sync=True)
 
     @validate('colorbar')
     def _valid_colorbar(self, proposal):

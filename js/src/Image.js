@@ -42,10 +42,19 @@ var ImageView = widgets.DOMWidgetView.extend({
         };
         this.model.on('change:GridOn change:SurveyKey change:FilePath', this.redraw, this);
         this.model.on('change:colorbar', this.update_color, this);
+        this.model.on('change:zoom', this.update_zoom, this);
+        this.model.on('change:x_pan change:y_pan', this.update_pan, this);
         this.redraw = this.redraw.bind(this);
         this.update_color = this.update_color.bind(this);
         this.color_changed = this.color_changed.bind(this);
-        this.removeListner = util.addActionListener(action.type.COLOR_CHANGE, this.color_changed);
+        this.colorListner = util.addActionListener(action.type.COLOR_CHANGE, this.color_changed);
+        this.update_zoom = this.update_zoom.bind(this);
+        this.zoom_changed = this.zoom_changed.bind(this);
+        this.zoomListner = util.addActionListener(action.type.ZOOM_IMAGE, this.zoom_changed);
+        this.update_pan = this.update_pan.bind(this);
+        this.pan_changed = this.pan_changed.bind(this);
+        this.stopPickListner = util.addActionListener(action.type.SELECT_POINT, this.pan_changed);
+        //this.panListner = util.addActionListener(action.type.PROCESS_SCROLL, this.pan_changed);
         setTimeout(this.redraw, 0);
     },
 
@@ -65,7 +74,7 @@ var ImageView = widgets.DOMWidgetView.extend({
 
     update_color: function() {
         console.log('updating color to ' + this.model.get('colorbar'));
-        firefly.action.dispatchColorChange({plotId : this.el.id, 
+        firefly.action.dispatchColorChange({plotId : this.el.id,
                                             cbarId : Number(this.model.get('colorbar')),
                                             actionScope : 'SINGLE'});
     },
@@ -82,6 +91,58 @@ var ImageView = widgets.DOMWidgetView.extend({
                 this.model.set('colorbar', cbarId);
                 this.touch();
             }
+        }
+    },
+
+    update_zoom: function() {
+        console.log('updating zoom to ' + this.model.get('zoom'));
+        firefly.action.dispatchZoom({plotId : this.el.id,
+                                     userZoomType : 'LEVEL',
+                                     level : this.model.get('zoom'),
+                                     forceDelay : true });
+    },
+
+    zoom_changed: function(action,state) {        // the callback for a zoom change
+        if (action.payload.plotId === this.req.plotId) {
+            var plot= util.image.getPrimePlot( action.payload.plotId);  // get the plot
+            console.log('I got a replot, zoom factor= ' + plot.zoomFactor);
+            zoom_factor = Math.round(parseFloat(plot.zoomFactor)*100)/100
+            var o_zoom = Math.round(this.model.get('zoom')*100)/100;
+            console.log('model zoom = ' + o_zoom);
+            if (zoom_factor != o_zoom){
+                console.log('updating model zoom to ' + zoom_factor);
+                this.model.set('zoom', zoom_factor);
+                this.touch();
+            }
+        }
+     },
+
+    update_pan: function() {
+        console.log('updating x_pan, y_pan to ' +
+                    this.model.get('x_pan') + ' ' + this.model.get('y_pan'));
+        firefly.action.dispatchRecenter({plotId : this.el.id,
+                                     centerPt : util.image.makeImagePt(
+                                     Number(this.model.get('x_pan')),
+                                     Number(this.model.get('y_pan')))});
+    },
+
+    pan_changed: function(action,state) {        // the callback for a zoom change
+         console.log('I got a scroll processed');
+        if (action.payload.plotId === this.req.plotId) {
+            var plot= util.image.getPrimePlot( action.payload.plotId);  // get the plot
+            //const cc= util.image.CysConverter.make(plot);
+            //const scrollToImagePt= cc.getImageCoords(
+            //            util.image.makeScreenPt(plot.scrollX,plot.scrollY));
+            var imagePt = String(action.payload.imagePt);
+            var worldPt = String(action.payload.worldPt);
+            console.log('imagePt is ' + imagePt);
+            var data = imagePt.split(';');
+            console.log('data[0] is ' + data[0]);
+            console.log('data[1] is ' + data[1]);
+            this.model.set('x_pan', Math.round(parseFloat(data[0])*100)/100);
+            this.model.set('y_pan', Math.round(parseFloat(data[1])*100)/100);
+            this.model.set('WorldPt', worldPt);
+            this.touch();
         }
      },
 
