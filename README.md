@@ -8,7 +8,7 @@ Firefly Components as Jupyter Widgets
 Installation
 ------------
 
-To install using pip:
+To install using pip (preferably after dependencies are installed with conda):
 
     $ pip install firefly_widgets
     $ jupyter nbextension enable --py --sys-prefix firefly_widgets
@@ -19,8 +19,8 @@ For a development installation (requires npm),
     $ git clone https://github.com/Caltech-IPAC/firefly_widgets.git
     $ cd firefly_widgets
     $ pip install -e .
-    $ jupyter nbextension install --py --symlink --user firefly_widgets
-    $ jupyter nbextension enable --py --user firefly_widgets
+    $ jupyter nbextension install --py --symlink --sys-prefix firefly_widgets
+    $ jupyter nbextension enable --py --sys-prefix firefly_widgets
     $ cd js
     $ npm install
 
