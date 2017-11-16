@@ -8,21 +8,21 @@
 __webpack_public_path__ = document.querySelector('body').getAttribute('data-base-url') + 'nbextensions/jupyter-firefly/';
 
 // Export widget models and views, and the npm package version number.
-module.exports = {}
+module.exports = Object.assign({}, require('./Image.js'), require('./Table.js'));
 
-var loadedModules = [
-	require('./Image.js'),
-	require('./Table.js')
-];
-
-for (var i in loadedModules) {
-    if (loadedModules.hasOwnProperty(i)) {
-        var loadedModule = loadedModules[i];
-        for (var target_name in loadedModule) {
-            if (loadedModule.hasOwnProperty(target_name)) {
-                module.exports[target_name] = loadedModule[target_name];
-            }
-        }
-    }
-}
+//var loadedModules = [
+//	require('./Image.js'),
+//	require('./Table.js')
+//];
+//
+//for (var i in loadedModules) {
+//    if (loadedModules.hasOwnProperty(i)) {
+//        var loadedModule = loadedModules[i];
+//        for (var target_name in loadedModule) {
+//            if (loadedModule.hasOwnProperty(target_name)) {
+//                module.exports[target_name] = loadedModule[target_name];
+//            }
+//        }
+//    }
+//}
 module.exports['version'] = require('../package.json').version;

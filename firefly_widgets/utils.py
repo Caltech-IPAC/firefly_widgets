@@ -1,4 +1,3 @@
-
 from __future__ import print_function
 from IPython.core.display import HTML
 from IPython.display import display

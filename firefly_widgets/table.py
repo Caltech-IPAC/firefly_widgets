@@ -4,7 +4,7 @@ from astropy.table import Table
 from six.moves.urllib.request import urlopen
 
 
-@widgets.register('Table')
+@widgets.register
 class TableViewer(widgets.DOMWidget):
     """
     Linked Table Viewer widget

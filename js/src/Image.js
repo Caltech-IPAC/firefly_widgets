@@ -1,5 +1,5 @@
-var widgets = require('jupyter-js-widgets');
-var _ = require('underscore');
+var widgets = require('@jupyter-widgets/base');
+var _ = require('lodash');
 
 
 // Custom Model. Custom widgets models must at least provide default values
@@ -9,7 +9,7 @@ var _ = require('underscore');
 // When serialiazing entire widget state for embedding, only values different from the
 // defaults will be specified.
 var ImageModel = widgets.DOMWidgetModel.extend({
-    defaults: _.extend(_.result(this, 'widgets.DOMWidgetModel.prototype.defaults'), {
+    defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
         _model_name : 'ImageModel',
         _view_name : 'ImageView',
         _model_module : 'jupyter-firefly',
@@ -83,7 +83,7 @@ var ImageView = widgets.DOMWidgetView.extend({
         if (action.payload.plotId === this.req.plotId) {
             var cbarId = Number(action.payload.primaryStateJson.colorTableId);
             var o_colorbar = Number(this.model.get('colorbar'));
-            var mymodel = this.model;
+            //var mymodel = this.model;
             console.log('I got a color change, colorbar = ' + cbarId);
             console.log('model colorbar = ' + o_colorbar);
             if (cbarId != o_colorbar){
@@ -106,7 +106,7 @@ var ImageView = widgets.DOMWidgetView.extend({
         if (action.payload.plotId === this.req.plotId) {
             var plot= util.image.getPrimePlot( action.payload.plotId);  // get the plot
             console.log('I got a replot, zoom factor= ' + plot.zoomFactor);
-            zoom_factor = Math.round(parseFloat(plot.zoomFactor)*100)/100
+            zoom_factor = Math.round(parseFloat(plot.zoomFactor)*100)/100;
             var o_zoom = Math.round(this.model.get('zoom')*100)/100;
             console.log('model zoom = ' + o_zoom);
             if (zoom_factor != o_zoom){
@@ -144,7 +144,7 @@ var ImageView = widgets.DOMWidgetView.extend({
             this.model.set('WorldPt', worldPt);
             this.touch();
         }
-     },
+     }
 
 });
 

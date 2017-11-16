@@ -76,9 +76,17 @@ class NPM(Command):
     def finalize_options(self):
         pass
 
+    def get_npm_name(self):
+        npm_cmd_name = 'npm'
+        if platform.system() == 'Windows':
+            npm_cmd_name = 'npm.cmd'
+
+        return npm_cmd_name
+
     def has_npm(self):
+        npm_cmd_name = self.get_npm_name()
         try:
-            check_call(['npm', '--version'])
+            check_call([npm_cmd_name, '--version'])
             return True
         except:
             return False
@@ -98,7 +106,8 @@ class NPM(Command):
 
         if self.should_run_npm_install():
             log.info("Installing build dependencies with npm.  This may take a while...")
-            check_call(['npm', 'install'], cwd=node_root, stdout=sys.stdout, stderr=sys.stderr)
+            npm_cmd_name = self.get_npm_name()
+            check_call([npm_cmd_name, 'install'], cwd=node_root, stdout=sys.stdout, stderr=sys.stderr)
             os.utime(self.node_modules, None)
 
         for t in self.targets:
@@ -129,7 +138,7 @@ setup_args = {
         ]),
     ],
     'install_requires': [
-        'ipywidgets>=6.0.0',
+        'ipywidgets>=7.0.0',
         'astropy>=1.2.0',
     ],
     'packages': find_packages(),
