@@ -5,23 +5,6 @@
 // already be loaded by the notebook otherwise.
 
 // Export widget models and views, and the npm package version number.
-module.exports = Object.assign({}, require('./Image.js'), require('./Table.js'));
-
-//var loadedModules = [
-//	require('./Image.js'),
-//	require('./Table.js')
-//];
-//
-//for (var i in loadedModules) {
-//    if (loadedModules.hasOwnProperty(i)) {
-//        var loadedModule = loadedModules[i];
-//        for (var target_name in loadedModule) {
-//            if (loadedModule.hasOwnProperty(target_name)) {
-//                module.exports[target_name] = loadedModule[target_name];
-//            }
-//        }
-//    }
-//}
-
+module.exports = Object.assign({}, require('./Image.js'), require('./Table.js'), require('./Chart.js'));
 
 module.exports['version'] = require('../package.json').version;
