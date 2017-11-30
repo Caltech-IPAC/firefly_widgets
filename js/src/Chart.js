@@ -33,8 +33,7 @@ var ChartView = widgets.DOMWidgetView.extend({
     },
 
     redraw: function() {
-        var tbl_group =  this.model.get('tbl_group');
-        firefly.showChart(this.el.id, {tbl_group: tbl_group || 'main'});
+        firefly.showChart(this.el.id, {tbl_group: this.model.get('tbl_group')});
     }
 
 });

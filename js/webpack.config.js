@@ -42,7 +42,7 @@ module.exports = [
         },
         externals: ['@jupyter-widgets/base']
     },
-    {// Embeddable {{ cookiecutter.npm_package_name }} bundle
+    {// Embeddable jupiter-firefly bundle
      //
      // This bundle is generally almost identical to the notebook bundle
      // containing the custom widget views and models.

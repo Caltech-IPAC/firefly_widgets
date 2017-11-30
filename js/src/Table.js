@@ -51,14 +51,16 @@ var TableView = widgets.DOMWidgetView.extend({
     },
 
     tableUpdated: function(action, state) {
-        var data_url = firefly.util.table.getTableSourceUrl(
-                        firefly.util.table.getTableUiByTblId(this.req.tbl_id));
-        this.model.set('data_url', data_url);
         if (action.payload.tbl_id === this.req.tbl_id) {
+            var data_url = firefly.util.table.getTableSourceUrl(
+                            firefly.util.table.getTableUiByTblId(this.req.tbl_id));
+            this.model.set('data_url', data_url);
+            var tbl_group = firefly.util.table.findGroupByTblId(this.req.tbl_id);
+            this.model.set('tbl_group', tbl_group);
             var o_filters = this.model.get('filters');
             var n_filters = action.payload.request.filters;
             if (o_filters != n_filters) {
-//                 this.model.set('filters', n_filters);
+                 this.model.set('filters', n_filters);
             }
         }
         this.touch();
