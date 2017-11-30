@@ -2,6 +2,7 @@ from ._version import version_info, __version__
 
 from .image import *
 from .table import *
+from .chart import *
 from .utils import connect
 
 

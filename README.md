@@ -26,7 +26,7 @@ For a development installation (requires npm),
 
 When using the widgets, if a warning about missing widgetsnbextension appears, follow the instructions in the warning to install it. Installed nbextensions can be listed with:
 
-    $ jupyter nbextensions list
+    $ jupyter nbextension list
 
 For further development:
  - Javascript side:

@@ -2,7 +2,7 @@ import ipywidgets as widgets
 from traitlets import Unicode, Bool, Integer, Float, TraitError, validate
 
 
-@widgets.register('Image')
+@widgets.register
 class ImageViewer(widgets.DOMWidget):
     """
     Image Viewer widget

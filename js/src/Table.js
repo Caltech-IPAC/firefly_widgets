@@ -1,5 +1,5 @@
-var widgets = require('jupyter-js-widgets');
-var _ = require('underscore');
+var widgets = require('@jupyter-widgets/base');
+var _ = require('lodash');
 
 
 // Custom Model. Custom widgets models must at least provide default values
@@ -9,11 +9,11 @@ var _ = require('underscore');
 // When serialiazing entire widget state for embedding, only values different from the
 // defaults will be specified.
 var TableModel = widgets.DOMWidgetModel.extend({
-    defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
+    defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
         _model_name : 'TableModel',
         _view_name : 'TableView',
         _model_module : 'jupyter-firefly',
-        _view_module : 'jupyter-firefly',
+        _view_module : 'jupyter-firefly'
     })
 });
 
@@ -51,14 +51,16 @@ var TableView = widgets.DOMWidgetView.extend({
     },
 
     tableUpdated: function(action, state) {
-        var data_url = firefly.util.table.getTableSourceUrl(
-                        firefly.util.table.getTableUiByTblId(this.req.tbl_id));
-        this.model.set('data_url', data_url);
         if (action.payload.tbl_id === this.req.tbl_id) {
+            var data_url = firefly.util.table.getTableSourceUrl(
+                            firefly.util.table.getTableUiByTblId(this.req.tbl_id));
+            this.model.set('data_url', data_url);
+            var tbl_group = firefly.util.table.findGroupByTblId(this.req.tbl_id);
+            this.model.set('tbl_group', tbl_group);
             var o_filters = this.model.get('filters');
             var n_filters = action.payload.request.filters;
             if (o_filters != n_filters) {
-//                 this.model.set('filters', n_filters);
+                 this.model.set('filters', n_filters);
             }
         }
         this.touch();

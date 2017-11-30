@@ -7,8 +7,7 @@ if (window.require) {
     window.require.config({
         map: {
             "*" : {
-                "jupyter-firefly": "nbextensions/jupyter-firefly/index",
-                "jupyter-js-widgets": "nbextensions/jupyter-js-widgets/extension"
+                "jupyter-firefly": "nbextensions/jupyter-firefly/index"
             }
         }
     });

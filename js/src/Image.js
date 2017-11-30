@@ -1,15 +1,15 @@
-var widgets = require('jupyter-js-widgets');
-var _ = require('underscore');
+var widgets = require('@jupyter-widgets/base');
+var _ = require('lodash');
 
 
 // Custom Model. Custom widgets models must at least provide default values
 // for model attributes, including `_model_name`, `_view_name`, `_model_module`
 // and `_view_module` when different from the base class.
 //
-// When serialiazing entire widget state for embedding, only values different from the
+// When serializing entire widget state for embedding, only values different from the
 // defaults will be specified.
 var ImageModel = widgets.DOMWidgetModel.extend({
-    defaults: _.extend(_.result(this, 'widgets.DOMWidgetModel.prototype.defaults'), {
+    defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
         _model_name : 'ImageModel',
         _view_name : 'ImageView',
         _model_module : 'jupyter-firefly',
@@ -19,8 +19,8 @@ var ImageModel = widgets.DOMWidgetModel.extend({
     })
 });
 
-var util = firefly.util;
-var action = firefly.action;
+//var util = firefly.util;
+//var action = firefly.action;
 
 
 var seq = 1;
@@ -29,6 +29,11 @@ var ImageView = widgets.DOMWidgetView.extend({
     render: function() {
         this.url = this.model.get('url');
         this.el.id = `imageViewer-${seq++}`;
+        // disable Jupyter notebook keyboard manager
+        // shortcut handling prevents input into dialog fields
+        this.el.onclick = () => {
+            Jupyter.keyboard_manager.disable();
+        };
         this.req = {
             plotId    : this.el.id,
             Type      : 'SERVICE',
@@ -47,14 +52,14 @@ var ImageView = widgets.DOMWidgetView.extend({
         this.redraw = this.redraw.bind(this);
         this.update_color = this.update_color.bind(this);
         this.color_changed = this.color_changed.bind(this);
-        this.colorListner = util.addActionListener(action.type.COLOR_CHANGE, this.color_changed);
+        this.colorListner = firefly.util.addActionListener(firefly.action.type.COLOR_CHANGE, this.color_changed);
         this.update_zoom = this.update_zoom.bind(this);
         this.zoom_changed = this.zoom_changed.bind(this);
-        this.zoomListner = util.addActionListener(action.type.ZOOM_IMAGE, this.zoom_changed);
+        this.zoomListner = firefly.util.addActionListener(firefly.action.type.ZOOM_IMAGE, this.zoom_changed);
         this.update_pan = this.update_pan.bind(this);
         this.pan_changed = this.pan_changed.bind(this);
-        this.stopPickListner = util.addActionListener(action.type.SELECT_POINT, this.pan_changed);
-        //this.panListner = util.addActionListener(action.type.PROCESS_SCROLL, this.pan_changed);
+        this.stopPickListner = firefly.util.addActionListener(firefly.action.type.SELECT_POINT, this.pan_changed);
+        //this.panListner = firefly.util.addActionListener(firefly.action.type.PROCESS_SCROLL, this.pan_changed);
         setTimeout(this.redraw, 0);
     },
 
@@ -83,7 +88,7 @@ var ImageView = widgets.DOMWidgetView.extend({
         if (action.payload.plotId === this.req.plotId) {
             var cbarId = Number(action.payload.primaryStateJson.colorTableId);
             var o_colorbar = Number(this.model.get('colorbar'));
-            var mymodel = this.model;
+            //var mymodel = this.model;
             console.log('I got a color change, colorbar = ' + cbarId);
             console.log('model colorbar = ' + o_colorbar);
             if (cbarId != o_colorbar){
@@ -104,9 +109,9 @@ var ImageView = widgets.DOMWidgetView.extend({
 
     zoom_changed: function(action,state) {        // the callback for a zoom change
         if (action.payload.plotId === this.req.plotId) {
-            var plot= util.image.getPrimePlot( action.payload.plotId);  // get the plot
+            var plot= firefly.util.image.getPrimePlot( action.payload.plotId);  // get the plot
             console.log('I got a replot, zoom factor= ' + plot.zoomFactor);
-            zoom_factor = Math.round(parseFloat(plot.zoomFactor)*100)/100
+            zoom_factor = Math.round(parseFloat(plot.zoomFactor)*100)/100;
             var o_zoom = Math.round(this.model.get('zoom')*100)/100;
             console.log('model zoom = ' + o_zoom);
             if (zoom_factor != o_zoom){
@@ -121,7 +126,7 @@ var ImageView = widgets.DOMWidgetView.extend({
         console.log('updating x_pan, y_pan to ' +
                     this.model.get('x_pan') + ' ' + this.model.get('y_pan'));
         firefly.action.dispatchRecenter({plotId : this.el.id,
-                                     centerPt : util.image.makeImagePt(
+                                     centerPt : firefly.util.image.makeImagePt(
                                      Number(this.model.get('x_pan')),
                                      Number(this.model.get('y_pan')))});
     },
@@ -129,10 +134,10 @@ var ImageView = widgets.DOMWidgetView.extend({
     pan_changed: function(action,state) {        // the callback for a zoom change
          console.log('I got a scroll processed');
         if (action.payload.plotId === this.req.plotId) {
-            var plot= util.image.getPrimePlot( action.payload.plotId);  // get the plot
-            //const cc= util.image.CysConverter.make(plot);
+            //var plot= firefly.util.image.getPrimePlot( action.payload.plotId);  // get the plot
+            //const cc= firefly.util.image.CysConverter.make(plot);
             //const scrollToImagePt= cc.getImageCoords(
-            //            util.image.makeScreenPt(plot.scrollX,plot.scrollY));
+            //            firefly.util.image.makeScreenPt(plot.scrollX,plot.scrollY));
             var imagePt = String(action.payload.imagePt);
             var worldPt = String(action.payload.worldPt);
             console.log('imagePt is ' + imagePt);
@@ -144,7 +149,7 @@ var ImageView = widgets.DOMWidgetView.extend({
             this.model.set('WorldPt', worldPt);
             this.touch();
         }
-     },
+     }
 
 });
 
