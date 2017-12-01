@@ -35,7 +35,10 @@ var TableView = widgets.DOMWidgetView.extend({
                      { page_size: this.model.get('page_size')
                      });
         }
-        this.el.id = `TableViewer-${seq++}`;
+        this.el.id = this.model.get('tbl_id');
+        this.model.set('conn_id', String(firefly.util.getWsConnId()));
+        this.model.set('channel', String(firefly.util.getWsChannel()));
+        this.touch();
         this.model.on('change:pageSize change:filters', this.redraw, this);
         this.redraw = this.redraw.bind(this);
         this.tableUpdated = this.tableUpdated.bind(this);
@@ -47,15 +50,15 @@ var TableView = widgets.DOMWidgetView.extend({
     redraw: function() {
         this.req.page_size = this.model.get('page_size');
         this.req.filters = this.model.get('filters');
-        firefly.showTable(this.el.id, this.req);
+        firefly.showTable(this.model.get('tbl_id'), this.req);
     },
 
     tableUpdated: function(action, state) {
-        if (action.payload.tbl_id === this.req.tbl_id) {
+        if (action.payload.tbl_id === this.model.get('tbl_id')) {
             var data_url = firefly.util.table.getTableSourceUrl(
-                            firefly.util.table.getTableUiByTblId(this.req.tbl_id));
+                            firefly.util.table.getTableUiByTblId(this.model.get('tbl_id')));
             this.model.set('data_url', data_url);
-            var tbl_group = firefly.util.table.findGroupByTblId(this.req.tbl_id);
+            var tbl_group = firefly.util.table.findGroupByTblId(this.model.get('tbl_id'));
             this.model.set('tbl_group', tbl_group);
             var o_filters = this.model.get('filters');
             var n_filters = action.payload.request.filters;
