@@ -17,25 +17,33 @@ var TableModel = widgets.DOMWidgetModel.extend({
     })
 });
 
-var seq = 1;
-
 // Custom View. Renders the widget model.
 var TableView = widgets.DOMWidgetView.extend({
     render: function() {
         this.url_or_path = this.model.get('url_or_path');
+        var tbl_id = this.model.get('tbl_id');
+        if (!tbl_id) {
+            tbl_id = firefly.util.table.uniqueTblId();
+            this.model.set('tbl_id', tbl_id);
+        }
         if (this.url_or_path.length === 0) {
             this.req = firefly.util.table.makeIrsaCatalogRequest('allwise_p3as_psd', 'WISE', 'allwise_p3as_psd',
-                {   position: this.model.get('position'),
+                {
+                    position: this.model.get('position'),
                     SearchMethod: 'Cone',
                     radius: this.model.get('radius')
-                });
+                },
+                {tbl_id}  // options
+            );
         }
         else {
             this.req = firefly.util.table.makeFileRequest(this.model.get('title'), this.model.get('url_or_path'), null,
-                     { page_size: this.model.get('page_size')
+                     {
+                         tbl_id,
+                         page_size: this.model.get('page_size')
                      });
         }
-        this.el.id = this.model.get('tbl_id');
+        this.el.id = tbl_id;
         this.model.set('conn_id', String(firefly.util.getWsConnId()));
         this.model.set('channel', String(firefly.util.getWsChannel()));
         this.touch();
@@ -50,7 +58,7 @@ var TableView = widgets.DOMWidgetView.extend({
     redraw: function() {
         this.req.page_size = this.model.get('page_size');
         this.req.filters = this.model.get('filters');
-        firefly.showTable(this.model.get('tbl_id'), this.req);
+        firefly.showTable(this.el.id, this.req);
     },
 
     tableUpdated: function(action, state) {

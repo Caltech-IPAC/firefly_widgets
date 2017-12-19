@@ -20,7 +20,7 @@ class TableViewer(widgets.DOMWidget):
     tbl_group = Unicode().tag(sync=True)
     conn_id = Unicode().tag(sync=True)
     channel = Unicode().tag(sync=True)
-    tbl_id = Unicode('tableViewer-1').tag(sync=True)
+    tbl_id = Unicode().tag(sync=True)
 
     def selection(self):
         """

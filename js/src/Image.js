@@ -22,12 +22,18 @@ var ImageModel = widgets.DOMWidgetModel.extend({
 //var util = firefly.util;
 //var action = firefly.action;
 
+var seq = 1;
 
 // Custom View. Renders the widget model.
 var ImageView = widgets.DOMWidgetView.extend({
     render: function() {
         this.url = this.model.get('url');
-        this.el.id = this.model.get('plot_id');
+        var plot_id = this.model.get('plot_id');
+        if (!plot_id) {
+            plot_id = `imageViewer-${seq++}`;
+            this.model.set('plot_id', plot_id);
+        }
+        this.el.id = plot_id;
         // disable Jupyter notebook keyboard manager
         // shortcut handling prevents input into dialog fields
         this.el.onclick = () => {
@@ -71,7 +77,7 @@ var ImageView = widgets.DOMWidgetView.extend({
         this.req.WorldPt = this.model.get('WorldPt');
         this.req.SizeInDeg = this.model.get('SizeInDeg');
         if (this.hasOwnProperty("url") && (this.url.length === 0)) {
-            firefly.showImage(this.model.get('plot_id'), this.req);
+            firefly.showImage(this.el.id, this.req);
         }
         else {
             console.log('using url ' + this.url);

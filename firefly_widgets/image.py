@@ -24,7 +24,7 @@ class ImageViewer(widgets.DOMWidget):
     zoom = Float(1.0).tag(sync=True)
     conn_id = Unicode().tag(sync=True)
     channel = Unicode().tag(sync=True)
-    plot_id = Unicode('imageViewer-1').tag(sync=True)
+    plot_id = Unicode().tag(sync=True)
 
     @validate('colorbar')
     def _valid_colorbar(self, proposal):
