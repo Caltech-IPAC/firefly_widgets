@@ -22,6 +22,9 @@ class ImageViewer(widgets.DOMWidget):
     x_pan = Float(1.0).tag(sync=True)
     y_pan = Float(1.0).tag(sync=True)
     zoom = Float(1.0).tag(sync=True)
+    conn_id = Unicode().tag(sync=True)
+    channel = Unicode().tag(sync=True)
+    plot_id = Unicode().tag(sync=True)
 
     @validate('colorbar')
     def _valid_colorbar(self, proposal):

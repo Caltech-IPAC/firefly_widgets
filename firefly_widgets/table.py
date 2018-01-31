@@ -18,6 +18,9 @@ class TableViewer(widgets.DOMWidget):
     url_or_path = Unicode().tag(sync=True)
     data_url = Unicode().tag(sync=True)
     tbl_group = Unicode().tag(sync=True)
+    conn_id = Unicode().tag(sync=True)
+    channel = Unicode().tag(sync=True)
+    tbl_id = Unicode().tag(sync=True)
 
     def selection(self):
         """
