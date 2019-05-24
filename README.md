@@ -3,7 +3,7 @@ firefly_widgets
 
 Firefly Components as Jupyter Widgets
 
-**Note: this repository contains experimental widgets for Jupyter notebook. This code is no longer maintained and is superceded by https://github.com/Caltech-IPAC/jupyter_firefly_extensions which works with Jupyterlab. **
+**Note: this repository contains experimental widgets for Jupyter notebook. This code is no longer maintained and is superceded by https://github.com/Caltech-IPAC/jupyter_firefly_extensions which works with Jupyterlab.**
 
 Installation
 ------------
